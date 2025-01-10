@@ -1,7 +1,7 @@
-# staff_sync
+# Staff Sync
 
 <p align="center">
-  <img src="assets/app_logo.png" alt="StaffSync Pro Logo" width="200"/>
+  <img src="lib/assets/app_logo.png" alt="StaffSync Pro Logo" width="200"/>
 </p>
 
 ## 📱 Overview
