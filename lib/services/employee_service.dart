@@ -1,33 +1,66 @@
 import 'dart:convert';
 import 'dart:io';
-import 'package:http/http.dart' as http;
-import 'package:http/io_client.dart';
+import 'package:dio/dio.dart';
+import 'package:dio/io.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../models/employee.dart';
 import '../utils/constants.dart';
 
 class EmployeeService {
-  static const String apiUrl = 'https://hub.dummyapis.com/employee';
+  final Dio _dio = Dio();
 
   Future<List<Employee>> getEmployees() async {
     try {
-      final http.Client client = _createHttpClient();
-      final response = await client.get(Uri.parse(apiUrl));
+      // Try to get cached data first
+      final prefs = await SharedPreferences.getInstance();
+      final cachedData = prefs.getString(AppConstants.employeesCacheKey);
+
+      if (cachedData != null && cachedData.isNotEmpty) {
+        try {
+          final List<dynamic> decodedData = json.decode(cachedData);
+          return decodedData
+              .map<Employee>((json) => Employee.fromJson(json))
+              .toList();
+        } catch (e) {
+          // Ignore corrupt cache and fetch fresh data
+          await prefs.remove(AppConstants.employeesCacheKey);
+        }
+      }
+
+      _dio.httpClientAdapter = IOHttpClientAdapter(createHttpClient: () {
+        final HttpClient client = HttpClient();
+        client.badCertificateCallback = (cert, host, port) => true;
+        return client;
+      });
+
+      // If no valid cached data, fetch from API
+      final response = await _dio.get(AppConstants.apiUrl);
 
       if (response.statusCode == 200) {
-        final List<dynamic> jsonResponse = json.decode(response.body);
-        return jsonResponse.map((json) => Employee.fromJson(json)).toList();
+        final List<dynamic> data = response.data;
+        final employees =
+        data.map<Employee>((json) => Employee.fromJson(json)).toList();
+
+        // Cache the data
+        await prefs.setString(
+            AppConstants.employeesCacheKey, json.encode(data));
+
+        return employees;
       } else {
-        throw Exception(AppConstants.errorLoadingEmployees);
+        throw Exception(
+            '${AppConstants.errorLoadingEmployees}: ${response.statusCode} - ${response.statusMessage}');
       }
+    } on DioException catch (e) {
+      throw Exception('${AppConstants.errorNetwork}: ${e.message}');
     } catch (e) {
       throw Exception('${AppConstants.errorGeneric}: $e');
     }
   }
 
-  // Create an IOClient with a custom HttpClient to handle SSL certificate expiration
-  http.Client _createHttpClient() {
-    final HttpClient httpClient = HttpClient()
-      ..badCertificateCallback = (X509Certificate cert, String host, int port) => true;
-    return IOClient(httpClient);
+  Future<void> clearCache() async {
+    final prefs = await SharedPreferences.getInstance();
+    if (prefs.containsKey(AppConstants.employeesCacheKey)) {
+      await prefs.remove(AppConstants.employeesCacheKey);
+    }
   }
 }

@@ -39,4 +39,28 @@ class Employee {
       address: json['address'],
     );
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'imageUrl': imageUrl,
+      'firstName': firstName,
+      'lastName': lastName,
+      'email': email,
+      'contactNumber': contactNumber,
+      'age': age,
+      'dob': dob,
+      'salary': salary,
+      'address': address,
+    };
+  }
+
+  String get formattedSalary {
+    return '${salary.toStringAsFixed(2)}k';
+  }
+
+  String get formattedPhone {
+    String phone = contactNumber;
+    return '(${phone.substring(0, 3)}) ${phone.substring(3, 6)}-${phone.substring(6)}';
+  }
 }
