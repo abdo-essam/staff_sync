@@ -6,11 +6,14 @@
 
 ## 📱 Overview
 
-StaffSync is a modern Flutter application designed for efficient employee directory management. It provides a clean and intuitive interface for viewing and managing employee information with features like real-time search, advanced sorting, and detailed employee profiles.
+StaffSync is a Flutter application that demonstrates efficient employee data management with local caching capabilities. The app fetches employee data using Dio, implements proper error handling, and provides detailed employee information with a smooth user interface.
 
 ## ✨ Features
 
-### Core Features
+### Technical Features
+- 🚀 Dio for API integration
+- 💾 Local caching using SharedPreferences
+- ⚡ Efficient error handling
 - 🔄 Real-time employee data fetching
 - 🔍 Advanced search functionality
 - ⚡ Fast and responsive UI
@@ -20,19 +23,10 @@ StaffSync is a modern Flutter application designed for efficient employee direct
 ### Employee Information
 - 👤 Profile pictures with fallback initials
 - 📧 Email addresses
-- 📞 Phone numbers
+- 📞 Formatted phone numbers
 - 💰 Salary information
 - 📍 Address details
-- 🎂 Age
-
-### User Experience
-- ✨ Smooth animations
-- ⚡ Fast loading states
-- ❌ Error handling
-- 🔄 Pull to refresh
-- 📱 Responsive design
-
-## 🛠️ Technical Details
+- 📅 Age and DOB
 
 ### Built With
 - Flutter
@@ -42,9 +36,9 @@ StaffSync is a modern Flutter application designed for efficient employee direct
 
 ## Screenshots
 
-| Staff Screen                             |
-|------------------------------------------|
-| <img src="staff_screen.png" width="250"> |
+| Staff Screen                             | Staff Details Screen                             |
+|------------------------------------------|--------------------------------------------------|
+| <img src="staff_screen.png" width="250"> | <img src="staff_details_screen.png" width="250"> |
 
 
 ### Dependencies
@@ -52,6 +46,8 @@ StaffSync is a modern Flutter application designed for efficient employee direct
 dependencies:
   flutter:
     sdk: flutter
-  http: ^1.1.0
-  cupertino_icons: ^1.0.2
+  dio:
+  shared_preferences:
+  cached_network_image:
+
 

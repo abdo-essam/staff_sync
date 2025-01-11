@@ -30,7 +30,6 @@ class CustomErrorWidget extends StatelessWidget {
           const SizedBox(height: 16),
           ElevatedButton.icon(
             onPressed: onRetry,
-            icon: const Icon(Icons.refresh),
             label: const Text('Retry'),
           ),
         ],
